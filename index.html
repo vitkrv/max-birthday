@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8" />
+    <title>З Днем народження, Максиме!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        :root {
+            --bg-gradient: radial-gradient(circle at top left, #ffe4f3 0, #ffd7a8 30%, #fff4c7 60%, #e0f7ff 100%);
+            --primary-text: #2b2b40;
+            --accent: #ff7aa2;
+            --accent-2: #ffb347;
+            --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden; /* no scroll */
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg-gradient);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary-text);
+        }
+
+        .page {
+            width: 100%;
+            max-width: 900px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 640px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 24px;
+            box-shadow: var(--shadow-soft);
+            padding: 1.5rem 1.5rem 1.8rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Confetti dots */
+        .card::before,
+        .card::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background:
+                    radial-gradient(circle at 20% 20%, rgba(255, 156, 189, 0.55) 0, transparent 55%),
+                    radial-gradient(circle at 70% 40%, rgba(255, 194, 120, 0.5) 0, transparent 55%),
+                    radial-gradient(circle at 30% 80%, rgba(152, 222, 255, 0.5) 0, transparent 55%);
+            opacity: 0.25;
+            z-index: -1;
+        }
+
+        .card::before {
+            top: -120px;
+            left: -80px;
+        }
+
+        .card::after {
+            bottom: -140px;
+            right: -80px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255, 186, 204, 0.18);
+            color: var(--accent);
+            font-size: clamp(0.7rem, 2.6vw, 0.85rem);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .badge span {
+            display: inline-block;
+        }
+
+        .balloon {
+            font-size: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(1.4rem, 5vw, 2.1rem);
+            line-height: 1.15;
+            margin-bottom: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .subtitle {
+            font-size: clamp(0.95rem, 3.2vw, 1.1rem);
+            margin-bottom: 1.4rem;
+            opacity: 0.85;
+        }
+
+        .counter-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .time-line-label {
+            font-size: clamp(0.85rem, 2.6vw, 1rem);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #76768c;
+            font-weight: 600;
+        }
+
+        .time-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.6rem;
+            max-width: 100%;
+        }
+
+        .segment {
+            flex: 0 1 calc(33% - 0.6rem);
+            min-width: 90px;
+            max-width: 120px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 18px;
+            padding: 0.55rem 0.35rem 0.6rem;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(8px);
+        }
+
+        .segment-main-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0.15rem;
+        }
+
+        .value {
+            font-variant-numeric: tabular-nums;
+            font-size: clamp(1.15rem, 4.5vw, 1.7rem);
+            font-weight: 800;
+            color: #272741;
+        }
+
+        .unit-short {
+            font-size: clamp(0.7rem, 2.4vw, 0.8rem);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0.7;
+        }
+
+        .unit-long {
+            margin-top: 0.12rem;
+            font-size: clamp(0.65rem, 2.2vw, 0.8rem);
+            text-transform: lowercase;
+            opacity: 0.8;
+        }
+
+        .footer-note {
+            margin-top: 1rem;
+            font-size: clamp(0.7rem, 2.3vw, 0.85rem);
+            color: #8a8699;
+        }
+
+        /* Ensure everything fits even on very small screens */
+        @media (max-height: 600px) {
+            .card {
+                padding: 1.1rem 1rem 1.2rem;
+                border-radius: 18px;
+            }
+            .subtitle {
+                margin-bottom: 0.9rem;
+            }
+            .footer-note {
+                margin-top: 0.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .segment {
+                flex: 0 1 calc(50% - 0.6rem);
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page">
+    <div class="card">
+        <div class="badge">
+            <span class="balloon">🎂</span>
+            <span>Celebrating a lifetime of XP</span>
+        </div>
+
+        <h1>З Днем народження, Максиме!</h1>
+        <p class="subtitle">Ти на цій планеті вже...</p>
+
+        <div class="counter-wrapper" aria-label="Час, який минув з моменту народження">
+            <div class="time-grid">
+                <div class="segment">
+                    <div class="segment-main-row">
+                        <span id="years" class="value">—</span>
+                        <span class="unit-short">р</span>
+                    </div>
+                    <div class="unit-long">років</div>
+                </div>
+
+                <div class="segment">
+                    <div class="segment-main-row">
+                        <span id="months" class="value">—</span>
+                        <span class="unit-short">міс</span>
+                    </div>
+                    <div class="unit-long">місяців</div>
+                </div>
+
+                <div class="segment">
+                    <div class="segment-main-row">
+                        <span id="days" class="value">—</span>
+                        <span class="unit-short">дн</span>
+                    </div>
+                    <div class="unit-long">днів</div>
+                </div>
+
+                <div class="segment">
+                    <div class="segment-main-row">
+                        <span id="hours" class="value">—</span>
+                        <span class="unit-short">год</span>
+                    </div>
+                    <div class="unit-long">годин</div>
+                </div>
+
+                <div class="segment">
+                    <div class="segment-main-row">
+                        <span id="minutes" class="value">—</span>
+                        <span class="unit-short">хв</span>
+                    </div>
+                    <div class="unit-long">хвилин</div>
+                </div>
+
+                <div class="segment">
+                    <div class="segment-main-row">
+                        <span id="seconds" class="value">—</span>
+                        <span class="unit-short">сек</span>
+                    </div>
+                    <div class="unit-long">секунд</div>
+                </div>
+            </div>
+
+            <div class="footer-note">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        // Birthday in local time: 24 November 1995, 09:20:00 (Ukraine)
+        // Months are 0-based (10 = November)
+        const birthDate = new Date(1995, 10, 24, 9, 20, 0, 0);
+
+        const elYears = document.getElementById("years");
+        const elMonths = document.getElementById("months");
+        const elDays = document.getElementById("days");
+        const elHours = document.getElementById("hours");
+        const elMinutes = document.getElementById("minutes");
+        const elSeconds = document.getElementById("seconds");
+
+        function pad(num) {
+            return num.toString().padStart(2, "0");
+        }
+
+        function updateCounter() {
+            const now = new Date();
+
+            let years = now.getFullYear() - birthDate.getFullYear();
+            let months = now.getMonth() - birthDate.getMonth();
+            let days = now.getDate() - birthDate.getDate();
+            let hours = now.getHours() - birthDate.getHours();
+            let minutes = now.getMinutes() - birthDate.getMinutes();
+            let seconds = now.getSeconds() - birthDate.getSeconds();
+
+            // Normalize from smallest unit up
+            if (seconds < 0) {
+                seconds += 60;
+                minutes -= 1;
+            }
+
+            if (minutes < 0) {
+                minutes += 60;
+                hours -= 1;
+            }
+
+            if (hours < 0) {
+                hours += 24;
+                days -= 1;
+            }
+
+            if (days < 0) {
+                // Get number of days in the previous month
+                const prevMonthLastDay = new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    0
+                ).getDate();
+                days += prevMonthLastDay;
+                months -= 1;
+            }
+
+            if (months < 0) {
+                months += 12;
+                years -= 1;
+            }
+
+            // Update DOM
+            elYears.textContent = years;
+            elMonths.textContent = months;
+            elDays.textContent = days;
+            elHours.textContent = pad(hours);
+            elMinutes.textContent = pad(minutes);
+            elSeconds.textContent = pad(seconds);
+        }
+
+        // Initial render
+        updateCounter();
+        // Update every second
+        setInterval(updateCounter, 1000);
+    })();
+</script>
+</body>
+</html>
