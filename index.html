@@ -7,11 +7,12 @@
 
     <style>
         :root {
-            --bg-gradient: radial-gradient(circle at top left, #ffe4f3 0, #ffd7a8 30%, #fff4c7 60%, #e0f7ff 100%);
-            --primary-text: #2b2b40;
-            --accent: #ff7aa2;
-            --accent-2: #ffb347;
-            --shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.12);
+            --primary-text: #f6f5ff;
+            --muted-text: rgba(246, 245, 255, 0.8);
+            --accent: #ff9bc8;
+            --accent-2: #ffc56d;
+            --card-bg: rgba(18, 12, 40, 0.88);
+            --shadow-soft: 0 25px 60px rgba(0, 0, 0, 0.45);
         }
 
         * {
@@ -20,82 +21,121 @@
             padding: 0;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
-            overflow: hidden; /* no scroll */
+            overflow: hidden;
         }
 
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: var(--bg-gradient);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             color: var(--primary-text);
+            background-color: #0b0a1a;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(120deg, #1f0a2a, #0a2b3a, #361b4d, #1a1f4d);
+            background-size: 250% 250%;
+            animation: bgShift 35s ease-in-out infinite;
+            z-index: -3;
+        }
+
+        @keyframes bgShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .floating-cakes {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .cake {
+            position: absolute;
+            top: 110vh;
+            transform: translate3d(-50%, 0, 0);
+            font-size: 2rem;
+            animation: floatCake linear infinite;
+            opacity: 0;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
+            will-change: transform, opacity;
+        }
+
+        @keyframes floatCake {
+            0% {
+                transform: translate3d(-50%, 0, 0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.95;
+            }
+            100% {
+                transform: translate3d(calc(-50% + var(--drift, 0px)), -220vh, 0);
+                opacity: 0;
+            }
         }
 
         .page {
             width: 100%;
             max-width: 900px;
             padding: 1.5rem;
+            margin: 0 auto;
+            height: 100%;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
         .card {
             width: 100%;
             max-width: 640px;
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 24px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
             box-shadow: var(--shadow-soft);
-            padding: 1.5rem 1.5rem 1.8rem;
+            padding: 1.8rem 1.6rem 2.1rem;
             text-align: center;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(14px);
         }
 
-        /* Confetti dots */
-        .card::before,
         .card::after {
             content: "";
             position: absolute;
-            width: 260px;
-            height: 260px;
-            border-radius: 50%;
-            background:
-                    radial-gradient(circle at 20% 20%, rgba(255, 156, 189, 0.55) 0, transparent 55%),
-                    radial-gradient(circle at 70% 40%, rgba(255, 194, 120, 0.5) 0, transparent 55%),
-                    radial-gradient(circle at 30% 80%, rgba(152, 222, 255, 0.5) 0, transparent 55%);
-            opacity: 0.25;
+            inset: 0;
+            background: radial-gradient(circle at 20% 30%, rgba(255, 155, 200, 0.18), transparent 55%),
+                radial-gradient(circle at 80% 70%, rgba(255, 197, 109, 0.18), transparent 55%);
+            pointer-events: none;
             z-index: -1;
-        }
-
-        .card::before {
-            top: -120px;
-            left: -80px;
-        }
-
-        .card::after {
-            bottom: -140px;
-            right: -80px;
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
-            padding: 0.25rem 0.8rem;
+            gap: 0.4rem;
+            padding: 0.25rem 1rem;
             border-radius: 999px;
-            background: rgba(255, 186, 204, 0.18);
+            background: rgba(255, 255, 255, 0.08);
             color: var(--accent);
             font-size: clamp(0.7rem, 2.6vw, 0.85rem);
             font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-
-        .badge span {
-            display: inline-block;
+            margin-bottom: 0.9rem;
         }
 
         .balloon {
@@ -103,172 +143,160 @@
         }
 
         h1 {
-            font-size: clamp(1.4rem, 5vw, 2.1rem);
+            font-size: clamp(1.5rem, 5vw, 2.3rem);
             line-height: 1.15;
             margin-bottom: 0.85rem;
             font-weight: 800;
-            letter-spacing: 0.02em;
         }
 
         .subtitle {
             font-size: clamp(0.95rem, 3.2vw, 1.1rem);
-            margin-bottom: 1.4rem;
-            opacity: 0.85;
+            margin-bottom: 1.6rem;
+            color: var(--muted-text);
         }
 
         .counter-wrapper {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 0.8rem;
+            gap: 1.5rem;
         }
 
-        .time-line-label {
-            font-size: clamp(0.85rem, 2.6vw, 1rem);
+        .counter-groups {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .counter-group {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 1.2rem 1rem 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .group-label {
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #76768c;
-            font-weight: 600;
+            letter-spacing: 0.08em;
+            font-size: clamp(0.65rem, 2vw, 0.75rem);
+            color: rgba(246, 245, 255, 0.6);
+            margin-bottom: 0.9rem;
         }
 
         .time-grid {
             display: flex;
             flex-wrap: wrap;
+            gap: 0.9rem;
             justify-content: center;
-            gap: 0.6rem;
-            max-width: 100%;
+        }
+
+        .counter-group:first-child .time-grid {
+            justify-content: space-between;
         }
 
         .segment {
-            flex: 0 1 calc(33% - 0.6rem);
-            min-width: 90px;
-            max-width: 120px;
-            background: rgba(255, 255, 255, 0.92);
+            flex: 1 1 calc(33% - 1.1rem);
+            min-width: 110px;
+            padding: 0.8rem 0.4rem;
             border-radius: 18px;
-            padding: 0.55rem 0.35rem 0.6rem;
-            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
-            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
 
-        .segment-main-row {
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            gap: 0.15rem;
+        .counter-group:last-child .segment {
+            flex: 1 1 calc(33% - 0.9rem);
         }
 
         .value {
             font-variant-numeric: tabular-nums;
-            font-size: clamp(1.15rem, 4.5vw, 1.7rem);
+            font-size: clamp(1.3rem, 4.5vw, 1.9rem);
             font-weight: 800;
-            color: #272741;
-        }
-
-        .unit-short {
-            font-size: clamp(0.7rem, 2.4vw, 0.8rem);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            opacity: 0.7;
+            color: var(--accent-2);
         }
 
         .unit-long {
-            margin-top: 0.12rem;
-            font-size: clamp(0.65rem, 2.2vw, 0.8rem);
+            font-size: clamp(0.75rem, 2.2vw, 0.9rem);
             text-transform: lowercase;
-            opacity: 0.8;
+            color: var(--muted-text);
         }
 
-        .footer-note {
-            margin-top: 1rem;
-            font-size: clamp(0.7rem, 2.3vw, 0.85rem);
-            color: #8a8699;
-        }
-
-        /* Ensure everything fits even on very small screens */
-        @media (max-height: 600px) {
+        @media (max-width: 540px) {
             .card {
-                padding: 1.1rem 1rem 1.2rem;
-                border-radius: 18px;
+                padding: 1.3rem 1.1rem 1.5rem;
+                border-radius: 22px;
             }
-            .subtitle {
-                margin-bottom: 0.9rem;
+
+            .segment {
+                flex: 1 1 calc(50% - 0.9rem);
+                min-width: 140px;
             }
-            .footer-note {
-                margin-top: 0.6rem;
+
+            .counter-group:last-child .segment {
+                flex: 1 1 calc(33% - 0.8rem);
             }
         }
 
-        @media (max-width: 480px) {
-            .segment {
-                flex: 0 1 calc(50% - 0.6rem);
+        @media (prefers-reduced-motion: reduce) {
+            body::before,
+            .cake {
+                animation: none;
             }
         }
     </style>
 </head>
 
 <body>
+<div class="floating-cakes" aria-hidden="true"></div>
 <div class="page">
     <div class="card">
         <div class="badge">
-            <span class="balloon">🎂</span>
-            <span>Celebrating a lifetime of XP</span>
+            <span class="balloon">🎉</span>
+            <span>Магія темного вечора</span>
         </div>
 
         <h1>З Днем народження, Максиме!</h1>
-        <p class="subtitle">Ти на цій планеті вже...</p>
+        <p class="subtitle">Ти вже на цій планеті...</p>
 
         <div class="counter-wrapper" aria-label="Час, який минув з моменту народження">
-            <div class="time-grid">
-                <div class="segment">
-                    <div class="segment-main-row">
-                        <span id="years" class="value">—</span>
-                        <span class="unit-short">р</span>
+            <div class="counter-groups">
+                <div class="counter-group">
+                    <div class="group-label">роки • місяці • дні</div>
+                    <div class="time-grid">
+                        <div class="segment">
+                            <span id="years" class="value">—</span>
+                            <div class="unit-long">років</div>
+                        </div>
+                        <div class="segment">
+                            <span id="months" class="value">—</span>
+                            <div class="unit-long">місяців</div>
+                        </div>
+                        <div class="segment">
+                            <span id="days" class="value">—</span>
+                            <div class="unit-long">днів</div>
+                        </div>
                     </div>
-                    <div class="unit-long">років</div>
                 </div>
-
-                <div class="segment">
-                    <div class="segment-main-row">
-                        <span id="months" class="value">—</span>
-                        <span class="unit-short">міс</span>
+                <div class="counter-group">
+                    <div class="group-label">години • хвилини • секунди</div>
+                    <div class="time-grid">
+                        <div class="segment">
+                            <span id="hours" class="value">—</span>
+                            <div class="unit-long">годин</div>
+                        </div>
+                        <div class="segment">
+                            <span id="minutes" class="value">—</span>
+                            <div class="unit-long">хвилин</div>
+                        </div>
+                        <div class="segment">
+                            <span id="seconds" class="value">—</span>
+                            <div class="unit-long">секунд</div>
+                        </div>
                     </div>
-                    <div class="unit-long">місяців</div>
                 </div>
-
-                <div class="segment">
-                    <div class="segment-main-row">
-                        <span id="days" class="value">—</span>
-                        <span class="unit-short">дн</span>
-                    </div>
-                    <div class="unit-long">днів</div>
-                </div>
-
-                <div class="segment">
-                    <div class="segment-main-row">
-                        <span id="hours" class="value">—</span>
-                        <span class="unit-short">год</span>
-                    </div>
-                    <div class="unit-long">годин</div>
-                </div>
-
-                <div class="segment">
-                    <div class="segment-main-row">
-                        <span id="minutes" class="value">—</span>
-                        <span class="unit-short">хв</span>
-                    </div>
-                    <div class="unit-long">хвилин</div>
-                </div>
-
-                <div class="segment">
-                    <div class="segment-main-row">
-                        <span id="seconds" class="value">—</span>
-                        <span class="unit-short">сек</span>
-                    </div>
-                    <div class="unit-long">секунд</div>
-                </div>
-            </div>
-
-            <div class="footer-note">
             </div>
         </div>
     </div>
@@ -276,8 +304,6 @@
 
 <script>
     (function () {
-        // Birthday in local time: 24 November 1995, 09:20:00 (Ukraine)
-        // Months are 0-based (10 = November)
         const birthDate = new Date(1995, 10, 24, 9, 20, 0, 0);
 
         const elYears = document.getElementById("years");
@@ -286,6 +312,7 @@
         const elHours = document.getElementById("hours");
         const elMinutes = document.getElementById("minutes");
         const elSeconds = document.getElementById("seconds");
+        const cakesContainer = document.querySelector(".floating-cakes");
 
         function pad(num) {
             return num.toString().padStart(2, "0");
@@ -301,7 +328,6 @@
             let minutes = now.getMinutes() - birthDate.getMinutes();
             let seconds = now.getSeconds() - birthDate.getSeconds();
 
-            // Normalize from smallest unit up
             if (seconds < 0) {
                 seconds += 60;
                 minutes -= 1;
@@ -318,12 +344,7 @@
             }
 
             if (days < 0) {
-                // Get number of days in the previous month
-                const prevMonthLastDay = new Date(
-                    now.getFullYear(),
-                    now.getMonth(),
-                    0
-                ).getDate();
+                const prevMonthLastDay = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
                 days += prevMonthLastDay;
                 months -= 1;
             }
@@ -333,7 +354,6 @@
                 years -= 1;
             }
 
-            // Update DOM
             elYears.textContent = years;
             elMonths.textContent = months;
             elDays.textContent = days;
@@ -342,10 +362,38 @@
             elSeconds.textContent = pad(seconds);
         }
 
-        // Initial render
+        const cakeCount = 10;
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        function spawnCakes() {
+            if (!cakesContainer || prefersReducedMotion) {
+                return;
+            }
+
+            for (let i = 0; i < cakeCount; i += 1) {
+                const cake = document.createElement("span");
+                cake.className = "cake";
+                cake.textContent = "🎂";
+
+                const left = Math.random() * 100;
+                const duration = 16 + Math.random() * 14;
+                const delay = Math.random() * -duration;
+                const drift = (Math.random() * 60 - 30).toFixed(2) + "px";
+                const size = (1.4 + Math.random() * 1.1).toFixed(2) + "rem";
+
+                cake.style.left = left + "vw";
+                cake.style.animationDuration = duration + "s";
+                cake.style.animationDelay = delay + "s";
+                cake.style.setProperty("--drift", drift);
+                cake.style.fontSize = size;
+
+                cakesContainer.appendChild(cake);
+            }
+        }
+
         updateCounter();
-        // Update every second
         setInterval(updateCounter, 1000);
+        spawnCakes();
     })();
 </script>
 </body>
