@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>З Днем народження, Максиме!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
 
     <style>
         :root {
@@ -56,7 +57,8 @@
             }
         }
 
-        .floating-cakes {
+        .floating-cakes,
+        .floating-celebrations {
             position: fixed;
             inset: 0;
             overflow: hidden;
@@ -64,7 +66,8 @@
             z-index: -1;
         }
 
-        .cake {
+        .cake,
+        .celebration {
             position: absolute;
             top: 110vh;
             transform: translate3d(-50%, 0, 0);
@@ -85,6 +88,42 @@
             }
             100% {
                 transform: translate3d(calc(-50% + var(--drift, 0px)), -220vh, 0);
+                opacity: 0;
+            }
+        }
+
+        .confetti-layer {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 14px;
+            border-radius: 4px;
+            opacity: 0;
+            transform-origin: center;
+            animation: confettiFly 3s ease-out forwards;
+            will-change: transform, opacity;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+        }
+
+        @keyframes confettiFly {
+            0% {
+                transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
+                opacity: 1;
+            }
+            70% {
+                transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rotation)) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate3d(calc(var(--dx) * 1.2), calc(var(--dy) * 1.1), 0) rotate(calc(var(--rotation) * 1.1))
+                    scale(0.85);
                 opacity: 0;
             }
         }
@@ -238,7 +277,9 @@
 
         @media (prefers-reduced-motion: reduce) {
             body::before,
-            .cake {
+            .cake,
+            .celebration,
+            .confetti-piece {
                 animation: none;
             }
         }
@@ -247,10 +288,12 @@
 
 <body>
 <div class="floating-cakes" aria-hidden="true"></div>
+<div class="floating-celebrations" aria-hidden="true"></div>
+<div class="confetti-layer" aria-hidden="true"></div>
 <div class="page">
     <div class="card">
         <h1>З Днем народження, Максиме!</h1>
-        <p class="subtitle">Ти вже на цій планеті...</p>
+        <p class="subtitle">Ти на цій планеті вже...</p>
 
         <div class="counter-wrapper" aria-label="Час, який минув з моменту народження">
             <div class="counter-groups">
@@ -302,6 +345,8 @@
         const elMinutes = document.getElementById("minutes");
         const elSeconds = document.getElementById("seconds");
         const cakesContainer = document.querySelector(".floating-cakes");
+        const celebrationsContainer = document.querySelector(".floating-celebrations");
+        const confettiLayer = document.querySelector(".confetti-layer");
 
         function pad(num) {
             return num.toString().padStart(2, "0");
@@ -352,6 +397,7 @@
         }
 
         const cakeCount = 10;
+        const celebrationCount = 10;
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         function spawnCakes() {
@@ -380,9 +426,77 @@
             }
         }
 
+        function spawnCelebrations() {
+            if (!celebrationsContainer || prefersReducedMotion) {
+                return;
+            }
+
+            for (let i = 0; i < celebrationCount; i += 1) {
+                const celebration = document.createElement("span");
+                celebration.className = "celebration";
+                celebration.textContent = "🎉";
+
+                const left = Math.random() * 100;
+                const duration = 16 + Math.random() * 14;
+                const delay = Math.random() * -duration;
+                const drift = (Math.random() * 60 - 30).toFixed(2) + "px";
+                const size = (1.3 + Math.random() * 1).toFixed(2) + "rem";
+
+                celebration.style.left = left + "vw";
+                celebration.style.animationDuration = duration + "s";
+                celebration.style.animationDelay = delay + "s";
+                celebration.style.setProperty("--drift", drift);
+                celebration.style.fontSize = size;
+
+                celebrationsContainer.appendChild(celebration);
+            }
+        }
+
+        function createConfettiBurst(x, y) {
+            if (!confettiLayer || prefersReducedMotion) {
+                return;
+            }
+
+            const colors = ["#ff9bc8", "#ffc56d", "#9ef0ff", "#baff9b", "#f6f5ff"];
+            const pieces = 30;
+
+            for (let i = 0; i < pieces; i += 1) {
+                const piece = document.createElement("div");
+                piece.className = "confetti-piece";
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 80 + Math.random() * 70;
+                const dx = Math.cos(angle) * distance;
+                const dy = Math.sin(angle) * distance;
+                const rotation = (Math.random() * 360 - 180).toFixed(2) + "deg";
+
+                piece.style.left = `${x}px`;
+                piece.style.top = `${y}px`;
+                piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.setProperty("--dx", `${dx.toFixed(2)}px`);
+                piece.style.setProperty("--dy", `${dy.toFixed(2)}px`);
+                piece.style.setProperty("--rotation", rotation);
+
+                confettiLayer.appendChild(piece);
+
+                setTimeout(() => {
+                    piece.remove();
+                }, 3100);
+            }
+        }
+
+        function handleConfetti(event) {
+            const point = event.touches ? event.touches[0] : event;
+            createConfettiBurst(point.clientX, point.clientY);
+        }
+
         updateCounter();
         setInterval(updateCounter, 1000);
         spawnCakes();
+        spawnCelebrations();
+
+        window.addEventListener("click", handleConfetti);
+        window.addEventListener("touchstart", handleConfetti);
     })();
 </script>
 </body>
