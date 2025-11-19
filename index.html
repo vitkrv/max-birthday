@@ -11,7 +11,7 @@
             --muted-text: rgba(246, 245, 255, 0.8);
             --accent: #ff9bc8;
             --accent-2: #ffc56d;
-            --card-bg: rgba(18, 12, 40, 0.88);
+            --card-bg: rgba(18, 12, 40, 0.6);
             --shadow-soft: 0 25px 60px rgba(0, 0, 0, 0.45);
         }
 
@@ -125,23 +125,6 @@
             z-index: -1;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.25rem 1rem;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--accent);
-            font-size: clamp(0.7rem, 2.6vw, 0.85rem);
-            font-weight: 600;
-            margin-bottom: 0.9rem;
-        }
-
-        .balloon {
-            font-size: 1rem;
-        }
-
         h1 {
             font-size: clamp(1.5rem, 5vw, 2.3rem);
             line-height: 1.15;
@@ -172,14 +155,6 @@
             border-radius: 20px;
             padding: 1.2rem 1rem 1.1rem;
             border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .group-label {
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            font-size: clamp(0.65rem, 2vw, 0.75rem);
-            color: rgba(246, 245, 255, 0.6);
-            margin-bottom: 0.9rem;
         }
 
         .time-grid {
@@ -240,6 +215,27 @@
             }
         }
 
+        @media (max-width: 430px) {
+            .card {
+                padding: 1rem 0.85rem 1.2rem;
+            }
+
+            .counter-group {
+                padding: 0.9rem 0.6rem 0.8rem;
+            }
+
+            .time-grid {
+                flex-wrap: nowrap;
+                gap: 0.4rem;
+            }
+
+            .segment {
+                flex: 1 1 auto;
+                min-width: 0;
+                padding: 0.6rem 0.3rem;
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             body::before,
             .cake {
@@ -253,18 +249,12 @@
 <div class="floating-cakes" aria-hidden="true"></div>
 <div class="page">
     <div class="card">
-        <div class="badge">
-            <span class="balloon">🎉</span>
-            <span>Магія темного вечора</span>
-        </div>
-
         <h1>З Днем народження, Максиме!</h1>
         <p class="subtitle">Ти вже на цій планеті...</p>
 
         <div class="counter-wrapper" aria-label="Час, який минув з моменту народження">
             <div class="counter-groups">
                 <div class="counter-group">
-                    <div class="group-label">роки • місяці • дні</div>
                     <div class="time-grid">
                         <div class="segment">
                             <span id="years" class="value">—</span>
@@ -281,7 +271,6 @@
                     </div>
                 </div>
                 <div class="counter-group">
-                    <div class="group-label">години • хвилини • секунди</div>
                     <div class="time-grid">
                         <div class="segment">
                             <span id="hours" class="value">—</span>
